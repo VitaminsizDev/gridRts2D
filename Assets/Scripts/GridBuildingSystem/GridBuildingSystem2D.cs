@@ -19,52 +19,14 @@ public class GridBuildingSystem2D : MonoBehaviour {
 
     private void Awake() {
         Instance = this;
-
-        int gridWidth = 10;
-        int gridHeight = 10;
-        float cellSize = 10f;
-        grid = new Grid<GridObject>(gridWidth, gridHeight, cellSize, new Vector3(0, 0, 0), (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
-
         placedObjectTypeSO = null;
     }
 
-    public class GridObject {
-
-        private Grid<GridObject> grid;
-        private int x;
-        private int y;
-        public PlacedObject_Done placedObject;
-
-        public GridObject(Grid<GridObject> grid, int x, int y) {
-            this.grid = grid;
-            this.x = x;
-            this.y = y;
-            placedObject = null;
-        }
-
-        public override string ToString() {
-            return x + ", " + y + "\n" + placedObject;
-        }
-
-        public void SetPlacedObject(PlacedObject_Done placedObject) {
-            this.placedObject = placedObject;
-            grid.TriggerGridObjectChanged(x, y);
-        }
-
-        public void ClearPlacedObject() {
-            placedObject = null;
-            grid.TriggerGridObjectChanged(x, y);
-        }
-
-        public PlacedObject_Done GetPlacedObject() {
-            return placedObject;
-        }
-
-        public bool CanBuild() {
-            return placedObject == null;
-        }
-
+    private void Start()
+    {
+        grid = GridManager.Instance.Grid;
     }
+
 
     private void Update() {
         if (Input.GetMouseButtonDown(0) && placedObjectTypeSO != null) {

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6cc2b5a114a48f4db3d28b7af32f6be, type: 3}
-  m_Name: GenericHouse
+  m_Name: Generic1x1
   m_EditorClassIdentifier: 
   nameString: GenericBuilding
   prefab: {fileID: 4782235985580720507, guid: ddb8edf4ab162f84cb0ed974a65ce419, type: 3}
