@@ -15,10 +15,12 @@ public class UiManager : MonoBehaviour
     [Header("Object References")]
     [SerializeField] private RectTransform productionMenu;
     [SerializeField] private RectTransform openProductionButton;
+    [SerializeField] private RectTransform unitInfoPanel;
     
     // Tweens
     private Sequence _openProductionMenuSequence;
     private Sequence _closeProductionMenuSequence;
+    private Tween _openUnitInfoPanelTween;
 
     private void Awake()
     {
@@ -40,6 +42,9 @@ public class UiManager : MonoBehaviour
         _closeProductionMenuSequence.Append(productionMenu.DOAnchorPosX(-productionMenu.rect.width, globalAnimationTime).SetEase(Ease.OutBounce));
         _closeProductionMenuSequence.Append(openProductionButton.DOAnchorPosX(0, globalAnimationTime).SetEase(Ease.OutBounce));
         _closeProductionMenuSequence.SetAutoKill(false).Pause();
+        
+        // Open unit info panel
+        _openUnitInfoPanelTween = unitInfoPanel.DOScaleX(1, globalAnimationTime / 3f).SetEase(Ease.Linear).SetAutoKill(false).Pause();
     }
 
     public void ToggleProductionMenu(bool toggle)
@@ -47,10 +52,12 @@ public class UiManager : MonoBehaviour
         if (toggle)
         {
             _openProductionMenuSequence.Restart();
+            _openUnitInfoPanelTween.PlayForward();
         }
         else
         {
             _closeProductionMenuSequence.Restart();
+            _openUnitInfoPanelTween.PlayBackwards();
         }
     }
 }
