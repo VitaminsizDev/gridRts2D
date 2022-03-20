@@ -27,6 +27,16 @@ public class UiManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnEnable()
+    {
+        SelectableObject.OnSelectableSelected += UiManager_OnSelected;
+    }
+    
+    private void OnDisable()
+    {
+        SelectableObject.OnSelectableSelected -= UiManager_OnSelected;
+    }
+
     private void Start()
     {
         // Setup tweens
@@ -52,12 +62,24 @@ public class UiManager : MonoBehaviour
         if (toggle)
         {
             _openProductionMenuSequence.Restart();
-            _openUnitInfoPanelTween.PlayForward();
         }
         else
         {
             _closeProductionMenuSequence.Restart();
-            _openUnitInfoPanelTween.PlayBackwards();
         }
+    }
+    
+    private void UiManager_OnSelected(GameObject selectedObject)
+    {
+        if (selectedObject != null)
+        {
+            _openUnitInfoPanelTween.PlayForward();
+        }
+        else _openUnitInfoPanelTween.PlayBackwards();
+    }
+
+    public void DeselectUnit()
+    {
+        SelectableObject.OnSelectableSelected?.Invoke(null);
     }
 }

@@ -11,10 +11,11 @@ public class GridBuildingSystem2D : MonoBehaviour {
     public event EventHandler OnSelectedChanged;
     public static Action<PlacedObject_Done,List<Vector2Int>> OnObjectPlaced;
     public static Action<Vector3> OnObjectRemoved;
+    public static Action<PlacedObjectTypeSO> OnObjectSelected;
+    
 
 
     private Grid<GridObject> grid;
-    [SerializeField] private List<PlacedObjectTypeSO> placedObjectTypeSOList = null;
     private PlacedObjectTypeSO placedObjectTypeSO;
     private PlacedObjectTypeSO.Dir dir;
 
@@ -32,12 +33,14 @@ public class GridBuildingSystem2D : MonoBehaviour {
     {
         OnObjectPlaced += GridBuildingSystem2D_OnObjectPlaced;
         OnObjectRemoved += GridBuildingSystem2D_OnObjectRemoved;
+        OnObjectSelected += GridBuildingSystem2D_OnObjectSelected;
     }
-    
+
     private void OnDisable()
     {
         OnObjectPlaced -= GridBuildingSystem2D_OnObjectPlaced;
         OnObjectRemoved -= GridBuildingSystem2D_OnObjectRemoved;
+        OnObjectSelected -= GridBuildingSystem2D_OnObjectSelected;
     }
 
     private void Update() {
@@ -77,12 +80,6 @@ public class GridBuildingSystem2D : MonoBehaviour {
             dir = PlacedObjectTypeSO.GetNextDir(dir);
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) { placedObjectTypeSO = placedObjectTypeSOList[0]; RefreshSelectedObjectType(); }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) { placedObjectTypeSO = placedObjectTypeSOList[1]; RefreshSelectedObjectType(); }
-        if (Input.GetKeyDown(KeyCode.Alpha3)) { placedObjectTypeSO = placedObjectTypeSOList[2]; RefreshSelectedObjectType(); }
-        if (Input.GetKeyDown(KeyCode.Alpha4)) { placedObjectTypeSO = placedObjectTypeSOList[3]; RefreshSelectedObjectType(); }
-        if (Input.GetKeyDown(KeyCode.Alpha5)) { placedObjectTypeSO = placedObjectTypeSOList[4]; RefreshSelectedObjectType(); }
-        if (Input.GetKeyDown(KeyCode.Alpha6)) { placedObjectTypeSO = placedObjectTypeSOList[5]; RefreshSelectedObjectType(); }
 
         if (Input.GetKeyDown(KeyCode.Alpha0)) { DeselectObjectType(); }
         
@@ -102,13 +99,19 @@ public class GridBuildingSystem2D : MonoBehaviour {
     }
     
     private void DeselectObjectType() {
-        placedObjectTypeSO = null; RefreshSelectedObjectType();
+        placedObjectTypeSO = null; 
+        RefreshSelectedObjectType();
     }
 
     private void RefreshSelectedObjectType() {
         OnSelectedChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    private void GridBuildingSystem2D_OnObjectSelected(PlacedObjectTypeSO obj)
+    {
+        placedObjectTypeSO = obj;
+        RefreshSelectedObjectType();
+    }
 
     public Vector2Int GetGridPosition(Vector3 worldPosition) {
         grid.GetXY(worldPosition, out int x, out int z);

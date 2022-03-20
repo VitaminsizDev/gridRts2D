@@ -5,31 +5,43 @@ using UnityEngine;
 
 public abstract class SelectableObject : MonoBehaviour
 {
+    [SerializeField] private PlacedObjectTypeSO placedObjectType;
     
+    public PlacedObjectTypeSO PlacedObjectType
+    {
+        get => placedObjectType;
+    }
     public bool isSelected { get; private set; } = false;
     
     // OnSelect action
-    public static Action onSelected;
+    public static Action<GameObject> OnSelectableSelected;
 
     private void OnEnable()
     {
         // Subscribe to events
-        onSelected += AnotherObjectSelected;
+        OnSelectableSelected += SelectableObject_OnSelected;
     }
     
     private void OnDisable()
     {
         // Unsubscribe from events
-        onSelected -= AnotherObjectSelected;
+        OnSelectableSelected -= SelectableObject_OnSelected;
     }
 
     /// <summary>
     /// Called with onSelected event
     /// All selectable objects become unselected
     /// </summary>
-    void AnotherObjectSelected()
+    void SelectableObject_OnSelected(GameObject selectedObj)
     {
-        isSelected = false;
+        if(selectedObj == this.gameObject)
+        {
+            isSelected = true;
+        }
+        else
+        {
+            isSelected = false;
+        }
     }
 
     /// <summary>
@@ -38,7 +50,6 @@ public abstract class SelectableObject : MonoBehaviour
     /// </summary>
     private void OnMouseDown()
     {
-        onSelected?.Invoke();
-        isSelected = true;
+        OnSelectableSelected?.Invoke(this.gameObject);
     }
 }
