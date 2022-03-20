@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public abstract class SelectableObject : MonoBehaviour
@@ -14,7 +15,7 @@ public abstract class SelectableObject : MonoBehaviour
     public bool isSelected { get; private set; } = false;
     
     // OnSelect action
-    public static Action<GameObject> OnSelectableSelected;
+    public static Action<SelectableObject> OnSelectableSelected;
 
     private void OnEnable()
     {
@@ -32,9 +33,15 @@ public abstract class SelectableObject : MonoBehaviour
     /// Called with onSelected event
     /// All selectable objects become unselected
     /// </summary>
-    void SelectableObject_OnSelected(GameObject selectedObj)
+    void SelectableObject_OnSelected([CanBeNull] SelectableObject selectedObj)
     {
-        if(selectedObj == this.gameObject)
+        if (selectedObj == null)
+        {
+            isSelected = false; 
+            return;
+        }
+        
+        if(selectedObj.gameObject == this.gameObject)
         {
             isSelected = true;
         }
@@ -50,6 +57,6 @@ public abstract class SelectableObject : MonoBehaviour
     /// </summary>
     private void OnMouseDown()
     {
-        OnSelectableSelected?.Invoke(this.gameObject);
+        OnSelectableSelected?.Invoke(this);
     }
 }

@@ -22,12 +22,18 @@ public class PlacedObjectTypeSO : ScriptableObject {
         Right,
     }
 
+    public enum ObjectType
+    {
+        Building,
+        Unit
+    }
+
     public string nameString;
     public Transform prefab;
     public Transform visual;
     public int width;
     public int height;
-
+    public ObjectType objType;
 
     public int GetRotationAngle(Dir dir) {
         switch (dir) {

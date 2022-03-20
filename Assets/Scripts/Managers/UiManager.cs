@@ -69,11 +69,22 @@ public class UiManager : MonoBehaviour
         }
     }
     
-    private void UiManager_OnSelected(GameObject selectedObject)
+    private void UiManager_OnSelected(SelectableObject selectedObject)
     {
         if (selectedObject != null)
         {
             _openUnitInfoPanelTween.PlayForward();
+            Debug.Log("Selected: " + selectedObject.PlacedObjectType.objType);
+            /*if (selectedObject.PlacedObjectType.objType == PlacedObjectTypeSO.ObjectType.Building)
+            {
+                unitInfoPanel.Find("ProductionTitle").gameObject.SetActive(true);
+                unitInfoPanel.Find("UnitButton").gameObject.SetActive(true);
+            }
+            else
+            {
+                unitInfoPanel.Find("ProductionTitle").gameObject.SetActive(false);
+                unitInfoPanel.Find("UnitButton").gameObject.SetActive(false);
+            }*/
         }
         else _openUnitInfoPanelTween.PlayBackwards();
     }
