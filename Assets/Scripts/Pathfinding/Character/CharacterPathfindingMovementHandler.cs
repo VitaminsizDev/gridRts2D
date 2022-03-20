@@ -30,6 +30,8 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
     public PlacedObjectTypeSO placedObjectTypeSO;
     private PlacedObjectTypeSO.Dir dir;
     
+    private Vector3 lastPosition;
+    
 
     private void Start() {
         pathVectorList = null;
@@ -38,6 +40,7 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
         unitAnimation = new V_UnitAnimation(unitSkeleton);
         animatedWalker = new AnimatedWalker(unitAnimation, UnitAnimType.GetUnitAnimType("dMarine_Idle"), UnitAnimType.GetUnitAnimType("dMarine_Walk"), 1f, 1f);
         lineRenderer = GetComponentInChildren<LineRenderer>();
+        lastPosition = transform.position;
     }
 
     private void Update() {
@@ -88,7 +91,7 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
 
         if (pathVectorList != null && pathVectorList.Count > 1) {
             // Call removed placed object event
-            GridBuildingSystem2D.OnObjectRemoved(this.transform.position);
+            GridBuildingSystem2D.OnObjectRemoved(lastPosition);
             
             // Call object placed event
             Vector2Int rotationOffset = placedObjectTypeSO.GetRotationOffset(dir);
@@ -102,6 +105,8 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
             GridBuildingSystem2D.OnObjectPlaced?.Invoke(placedObject, gridPositionList);
             DrawWalkPath(pathVectorList);
             pathVectorList.RemoveAt(0);
+            
+            lastPosition = targetPosition;
         }
     }
 
