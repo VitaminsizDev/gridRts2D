@@ -27,6 +27,9 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
     private List<Vector3> pathVectorList;
     private LineRenderer lineRenderer;
     
+    public PlacedObjectTypeSO placedObjectTypeSO;
+    private PlacedObjectTypeSO.Dir dir;
+    
 
     private void Start() {
         pathVectorList = null;
@@ -84,6 +87,19 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
         pathVectorList = Pathfinding.Instance.FindPath(GetPosition(), targetPosition);
 
         if (pathVectorList != null && pathVectorList.Count > 1) {
+            // Call removed placed object event
+            GridBuildingSystem2D.OnObjectRemoved(this.transform.position);
+            
+            // Call object placed event
+            Vector2Int rotationOffset = placedObjectTypeSO.GetRotationOffset(dir);
+            Vector3 placedObjectWorldPosition = targetPosition;//GridManager.Instance.Grid.GetWorldPosition(x, z) + new Vector3(rotationOffset.x, rotationOffset.y) * grid.GetCellSize();
+            GridManager.Instance.Grid.GetXY(targetPosition, out int x, out int z);
+
+            Vector2Int placedObjectOrigin = new Vector2Int(x, z);
+
+            PlacedObject_Done placedObject = PlacedObject_Done.Create(placedObjectWorldPosition, placedObjectOrigin, dir, placedObjectTypeSO);
+            List<Vector2Int> gridPositionList = placedObjectTypeSO.GetGridPositionList(placedObjectOrigin, dir);
+            GridBuildingSystem2D.OnObjectPlaced?.Invoke(placedObject, gridPositionList);
             DrawWalkPath(pathVectorList);
             pathVectorList.RemoveAt(0);
         }

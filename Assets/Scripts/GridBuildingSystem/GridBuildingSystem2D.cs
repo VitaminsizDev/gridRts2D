@@ -28,6 +28,17 @@ public class GridBuildingSystem2D : MonoBehaviour {
         grid = GridManager.Instance.Grid;
     }
 
+    private void OnEnable()
+    {
+        OnObjectPlaced += GridBuildingSystem2D_OnObjectPlaced;
+        OnObjectRemoved += GridBuildingSystem2D_OnObjectRemoved;
+    }
+    
+    private void OnDisable()
+    {
+        OnObjectPlaced -= GridBuildingSystem2D_OnObjectPlaced;
+        OnObjectRemoved -= GridBuildingSystem2D_OnObjectRemoved;
+    }
 
     private void Update() {
         if (Input.GetMouseButtonDown(0) && placedObjectTypeSO != null) {
@@ -51,11 +62,6 @@ public class GridBuildingSystem2D : MonoBehaviour {
                 Vector3 placedObjectWorldPosition = grid.GetWorldPosition(x, z) + new Vector3(rotationOffset.x, rotationOffset.y) * grid.GetCellSize();
 
                 PlacedObject_Done placedObject = PlacedObject_Done.Create(placedObjectWorldPosition, placedObjectOrigin, dir, placedObjectTypeSO);
-                placedObject.transform.rotation = Quaternion.Euler(0, 0, -placedObjectTypeSO.GetRotationAngle(dir));
-
-                foreach (Vector2Int gridPosition in gridPositionList) {
-                    grid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
-                }
                 
                 // Invoke OnObjectPlaced Event
                 OnObjectPlaced?.Invoke(placedObject, gridPositionList);
@@ -92,13 +98,6 @@ public class GridBuildingSystem2D : MonoBehaviour {
         if (placedObject != null) {
             // Call action
             OnObjectRemoved?.Invoke(mousePosition);
-            // Demolish
-            placedObject.DestroySelf();
-
-            List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
-            foreach (Vector2Int gridPosition in gridPositionList) {
-                grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
-            }
         }
     }
     
@@ -140,5 +139,29 @@ public class GridBuildingSystem2D : MonoBehaviour {
     public PlacedObjectTypeSO GetPlacedObjectTypeSO() {
         return placedObjectTypeSO;
     }
+    
+    private void GridBuildingSystem2D_OnObjectPlaced(PlacedObject_Done placedObject, List<Vector2Int> gridPositionList)
+    {
+        placedObject.transform.rotation = Quaternion.Euler(0, 0, 0);//-placedObjectTypeSO.GetRotationAngle(dir));
+
+        foreach (Vector2Int gridPosition in gridPositionList) {
+            grid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
+        }
+    }
+
+    private void GridBuildingSystem2D_OnObjectRemoved(Vector3 mousePosition)
+    {
+        PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
+        if (placedObject != null) {
+            // Demolish
+            placedObject.DestroySelf();
+
+            List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
+            foreach (Vector2Int gridPosition in gridPositionList) {
+                grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+            }
+        }
+    }
+    
 
 }

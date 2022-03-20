@@ -31,13 +31,13 @@ public class PathfindingManager : MonoBehaviour
     private void OnEnable()
     {
         GridBuildingSystem2D.OnObjectPlaced += Pathfinding_OnObjectPlaced;
-        GridBuildingSystem2D.OnObjectRemoved += RemovePlacedObject;
+        GridBuildingSystem2D.OnObjectRemoved += Pathfinding_OnObjectRemoved;
     }
     
     private void OnDisable()
     {
         GridBuildingSystem2D.OnObjectPlaced -= Pathfinding_OnObjectPlaced;
-        GridBuildingSystem2D.OnObjectRemoved -= RemovePlacedObject;
+        GridBuildingSystem2D.OnObjectRemoved -= Pathfinding_OnObjectRemoved;
     }
 
     private void Pathfinding_OnObjectPlaced(PlacedObject_Done placedObject, List<Vector2Int> gridPositionList)
@@ -47,7 +47,7 @@ public class PathfindingManager : MonoBehaviour
         }
     }
     
-    private void RemovePlacedObject(Vector3 mousePosition)
+    private void Pathfinding_OnObjectRemoved(Vector3 mousePosition)
     {
         PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
         if (placedObject != null) {
