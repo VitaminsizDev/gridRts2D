@@ -9,7 +9,8 @@ public class GridBuildingSystem2D : MonoBehaviour {
     public static GridBuildingSystem2D Instance { get; private set; }
 
     public event EventHandler OnSelectedChanged;
-    public event EventHandler OnObjectPlaced;
+    public static Action<PlacedObject_Done,List<Vector2Int>> OnObjectPlaced;
+    public static Action<Vector3> OnObjectRemoved;
 
 
     private Grid<GridObject> grid;
@@ -55,8 +56,9 @@ public class GridBuildingSystem2D : MonoBehaviour {
                 foreach (Vector2Int gridPosition in gridPositionList) {
                     grid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
                 }
-
-                OnObjectPlaced?.Invoke(this, EventArgs.Empty);
+                
+                // Invoke OnObjectPlaced Event
+                OnObjectPlaced?.Invoke(placedObject, gridPositionList);
 
                 //DeselectObjectType();
             } else {
@@ -77,23 +79,29 @@ public class GridBuildingSystem2D : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Alpha6)) { placedObjectTypeSO = placedObjectTypeSOList[5]; RefreshSelectedObjectType(); }
 
         if (Input.GetKeyDown(KeyCode.Alpha0)) { DeselectObjectType(); }
-
-
+        
         if (Input.GetMouseButtonDown(1)) {
             Vector3 mousePosition = UtilsClass.GetMouseWorldPosition();
-            PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
-            if (placedObject != null) {
-                // Demolish
-                placedObject.DestroySelf();
-
-                List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
-                foreach (Vector2Int gridPosition in gridPositionList) {
-                    grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
-                }
-            }
+            RemovePlacedObject(mousePosition);
         }
     }
 
+    private void RemovePlacedObject(Vector3 mousePosition)
+    {
+        PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
+        if (placedObject != null) {
+            // Call action
+            OnObjectRemoved?.Invoke(mousePosition);
+            // Demolish
+            placedObject.DestroySelf();
+
+            List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
+            foreach (Vector2Int gridPosition in gridPositionList) {
+                grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+            }
+        }
+    }
+    
     private void DeselectObjectType() {
         placedObjectTypeSO = null; RefreshSelectedObjectType();
     }

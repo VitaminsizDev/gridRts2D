@@ -5,12 +5,18 @@ using UnityEngine;
 public class GridObject {
 
     private Grid<GridObject> grid;
-    private int x;
-    private int y;
+    public int x { get; private set; }
+    public int y { get; private set; }
     public PlacedObject_Done placedObject;
 
     public GridObject(Grid<GridObject> grid, int x, int y) {
         this.grid = grid;
+        this.x = x;
+        this.y = y;
+        placedObject = null;
+    }
+    
+    public GridObject(int x, int y) {
         this.x = x;
         this.y = y;
         placedObject = null;
