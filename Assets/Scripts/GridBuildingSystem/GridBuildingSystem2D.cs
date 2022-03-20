@@ -66,7 +66,7 @@ public class GridBuildingSystem2D : MonoBehaviour {
                 // Invoke OnObjectPlaced Event
                 OnObjectPlaced?.Invoke(placedObject, gridPositionList);
 
-                //DeselectObjectType();
+                DeselectObjectType();
             } else {
                 // Cannot build here
                 UtilsClass.CreateWorldTextPopup("Cannot Build Here!", mousePosition);
