@@ -32,12 +32,14 @@ public class PathfindingManager : MonoBehaviour
     {
         GridBuildingSystem2D.OnObjectPlaced += Pathfinding_OnObjectPlaced;
         GridBuildingSystem2D.OnObjectRemoved += Pathfinding_OnObjectRemoved;
+        GridBuildingSystem2D.OnObjectMoved += Pathfinding_OnObjectMoved;
     }
     
     private void OnDisable()
     {
         GridBuildingSystem2D.OnObjectPlaced -= Pathfinding_OnObjectPlaced;
         GridBuildingSystem2D.OnObjectRemoved -= Pathfinding_OnObjectRemoved;
+        GridBuildingSystem2D.OnObjectMoved -= Pathfinding_OnObjectMoved;
     }
 
     private void Pathfinding_OnObjectPlaced(PlacedObject_Done placedObject, List<Vector2Int> gridPositionList)
@@ -47,16 +49,32 @@ public class PathfindingManager : MonoBehaviour
         }
     }
     
-    private void Pathfinding_OnObjectRemoved(Vector3 mousePosition)
+    private void Pathfinding_OnObjectRemoved(Vector3 mousePosition, bool isUnit)
     {
         PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
         if (placedObject != null) {
-            // Demolish
-            placedObject.DestroySelf();
+            // Demolish if not unit
+            if(!isUnit) placedObject.DestroySelf();
 
             List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
             foreach (Vector2Int gridPosition in gridPositionList) {
                 grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+            }
+        }
+    }
+    
+    private void Pathfinding_OnObjectMoved(Vector3 lastPos, List<Vector2Int> targetGridPositionList)
+    {
+        PlacedObject_Done placedObject = grid.GetGridObject(lastPos).GetPlacedObject();
+        if (placedObject != null) {
+            List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
+            foreach (Vector2Int gridPosition in gridPositionList) {
+                grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+            }
+            placedObject.transform.rotation = Quaternion.Euler(0, 0, 0);//-placedObjectTypeSO.GetRotationAngle(dir));
+
+            foreach (Vector2Int gridPosition in targetGridPositionList) {
+                grid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
             }
         }
     }

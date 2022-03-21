@@ -10,8 +10,10 @@ public class GridBuildingSystem2D : MonoBehaviour {
 
     public event EventHandler OnSelectedChanged;
     public static Action<PlacedObject_Done,List<Vector2Int>> OnObjectPlaced;
-    public static Action<Vector3> OnObjectRemoved;
+    public static Action<Vector3, bool> OnObjectRemoved;
+    public static Action<Vector3,List<Vector2Int>> OnObjectMoved;
     public static Action<PlacedObjectTypeSO> OnObjectSelected;
+    public static Action<PlacedObject_Done> OnPlacedObjectSelected;
     
 
 
@@ -34,13 +36,17 @@ public class GridBuildingSystem2D : MonoBehaviour {
         OnObjectPlaced += GridBuildingSystem2D_OnObjectPlaced;
         OnObjectRemoved += GridBuildingSystem2D_OnObjectRemoved;
         OnObjectSelected += GridBuildingSystem2D_OnObjectSelected;
+        OnObjectMoved += GridBuildingSystem2D_OnObjectMoved;
     }
+
+    
 
     private void OnDisable()
     {
         OnObjectPlaced -= GridBuildingSystem2D_OnObjectPlaced;
         OnObjectRemoved -= GridBuildingSystem2D_OnObjectRemoved;
         OnObjectSelected -= GridBuildingSystem2D_OnObjectSelected;
+        OnObjectMoved -= GridBuildingSystem2D_OnObjectMoved;
     }
 
     private void Update() {
@@ -84,17 +90,24 @@ public class GridBuildingSystem2D : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Alpha0)) { DeselectObjectType(); }
         
         if (Input.GetMouseButtonDown(1)) {
+            //Vector3 mousePosition = UtilsClass.GetMouseWorldPosition();
+            //RemovePlacedObject(mousePosition);
+            // Get placed object
             Vector3 mousePosition = UtilsClass.GetMouseWorldPosition();
-            RemovePlacedObject(mousePosition);
+            PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
+            if (placedObject != null) {
+                // Invoke OnPlacedObjectSelected Event
+                OnPlacedObjectSelected?.Invoke(placedObject);
+            }
         }
     }
 
-    private void RemovePlacedObject(Vector3 mousePosition)
+    private void RemovePlacedObject(Vector3 mousePosition, bool isUnit)
     {
         PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
         if (placedObject != null) {
             // Call action
-            OnObjectRemoved?.Invoke(mousePosition);
+            OnObjectRemoved?.Invoke(mousePosition, isUnit);
         }
     }
     
@@ -152,16 +165,33 @@ public class GridBuildingSystem2D : MonoBehaviour {
         }
     }
 
-    private void GridBuildingSystem2D_OnObjectRemoved(Vector3 mousePosition)
+    private void GridBuildingSystem2D_OnObjectRemoved(Vector3 mousePosition, bool isUnit)
     {
         PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
         if (placedObject != null) {
-            // Demolish
-            placedObject.DestroySelf();
+            // Demolish if not unit
+            if(!isUnit) placedObject.DestroySelf();
 
             List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
             foreach (Vector2Int gridPosition in gridPositionList) {
                 grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+            }
+        }
+    }
+    
+    private void GridBuildingSystem2D_OnObjectMoved(Vector3 lastPos, List<Vector2Int> targetGridPositionList)
+    {
+        PlacedObject_Done placedObject = grid.GetGridObject(lastPos).GetPlacedObject();
+        if (placedObject != null) {
+            List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
+            foreach (Vector2Int gridPosition in gridPositionList) {
+                grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+                Debug.Log("Cleared placed object at " + gridPosition);
+            }
+            placedObject.transform.rotation = Quaternion.Euler(0, 0, 0);//-placedObjectTypeSO.GetRotationAngle(dir));
+
+            foreach (Vector2Int gridPosition in targetGridPositionList) {
+                grid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
             }
         }
     }

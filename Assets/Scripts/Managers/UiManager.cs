@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public class UiManager : MonoBehaviour
@@ -29,12 +30,12 @@ public class UiManager : MonoBehaviour
 
     private void OnEnable()
     {
-        SelectableObject.OnSelectableSelected += UiManager_OnSelected;
+        GridBuildingSystem2D.OnPlacedObjectSelected += UiManager_OnSelected;
     }
     
     private void OnDisable()
     {
-        SelectableObject.OnSelectableSelected -= UiManager_OnSelected;
+        GridBuildingSystem2D.OnPlacedObjectSelected -= UiManager_OnSelected;
     }
 
     private void Start()
@@ -69,13 +70,14 @@ public class UiManager : MonoBehaviour
         }
     }
     
-    private void UiManager_OnSelected(SelectableObject selectedObject)
+    private void UiManager_OnSelected(PlacedObject_Done selectedObject)
     {
         if (selectedObject != null)
         {
             _openUnitInfoPanelTween.PlayForward();
-            Debug.Log("Selected: " + selectedObject.PlacedObjectType.objType);
-            /*if (selectedObject.PlacedObjectType.objType == PlacedObjectTypeSO.ObjectType.Building)
+            // Set name
+            unitInfoPanel.Find("UnitName").GetComponent<TextMeshProUGUI>().text = selectedObject.PlacedObjectTypeSO.nameString;
+            if (selectedObject.PlacedObjectTypeSO.objType == PlacedObjectTypeSO.ObjectType.Building)
             {
                 unitInfoPanel.Find("ProductionTitle").gameObject.SetActive(true);
                 unitInfoPanel.Find("UnitButton").gameObject.SetActive(true);
@@ -84,13 +86,13 @@ public class UiManager : MonoBehaviour
             {
                 unitInfoPanel.Find("ProductionTitle").gameObject.SetActive(false);
                 unitInfoPanel.Find("UnitButton").gameObject.SetActive(false);
-            }*/
+            }
         }
         else _openUnitInfoPanelTween.PlayBackwards();
     }
 
     public void DeselectUnit()
     {
-        SelectableObject.OnSelectableSelected?.Invoke(null);
+        GridBuildingSystem2D.OnPlacedObjectSelected?.Invoke(null);
     }
 }

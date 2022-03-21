@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6cc2b5a114a48f4db3d28b7af32f6be, type: 3}
-  m_Name: Generic1x1
+  m_Name: Soldier
   m_EditorClassIdentifier: 
-  nameString: GenericBuilding
-  prefab: {fileID: 4782235985580720507, guid: ddb8edf4ab162f84cb0ed974a65ce419, type: 3}
+  nameString: Soldier 1x1
+  prefab: {fileID: 8977567878950729407, guid: d11b7d640a872bf4e8db9e135b4ac89a, type: 3}
   visual: {fileID: 6271766961574565335, guid: bc036bdfa27fe0a4a91314610068f5ac, type: 3}
   width: 1
   height: 1

@@ -16,7 +16,7 @@ using UnityEngine;
 using V_AnimationSystem;
 using Helper.Utils;
 
-public class CharacterPathfindingMovementHandler : SelectableObject {
+public class CharacterPathfindingMovementHandler : PlacedObject_Done {
 
     private const float speed = 40f;
 
@@ -26,9 +26,6 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
     private int currentPathIndex;
     private List<Vector3> pathVectorList;
     private LineRenderer lineRenderer;
-    
-    public PlacedObjectTypeSO placedObjectTypeSO;
-    private PlacedObjectTypeSO.Dir dir;
     
     private Vector3 lastPosition;
     
@@ -47,7 +44,7 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
         HandleMovement();
         unitSkeleton.Update(Time.deltaTime);
 
-        if (Input.GetMouseButtonDown(0) && isSelected && !UtilsClass.IsPointerOverUI()) {
+        if (Input.GetKeyDown(KeyCode.Space) && isSelected && !UtilsClass.IsPointerOverUI()) {
             Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
             SetTargetPosition(mouseWorldPosition);
         }
@@ -90,19 +87,19 @@ public class CharacterPathfindingMovementHandler : SelectableObject {
         pathVectorList = Pathfinding.Instance.FindPath(GetPosition(), targetPosition);
 
         if (pathVectorList != null && pathVectorList.Count > 1) {
-            // Call removed placed object event
-            GridBuildingSystem2D.OnObjectRemoved(lastPosition);
             
             // Call object placed event
-            Vector2Int rotationOffset = placedObjectTypeSO.GetRotationOffset(dir);
+            Vector2Int rotationOffset = PlacedObjectTypeSO.GetRotationOffset(dir);
             Vector3 placedObjectWorldPosition = targetPosition;//GridManager.Instance.Grid.GetWorldPosition(x, z) + new Vector3(rotationOffset.x, rotationOffset.y) * grid.GetCellSize();
             GridManager.Instance.Grid.GetXY(targetPosition, out int x, out int z);
 
             Vector2Int placedObjectOrigin = new Vector2Int(x, z);
 
-            PlacedObject_Done placedObject = PlacedObject_Done.Create(placedObjectWorldPosition, placedObjectOrigin, dir, placedObjectTypeSO);
-            List<Vector2Int> gridPositionList = placedObjectTypeSO.GetGridPositionList(placedObjectOrigin, dir);
-            GridBuildingSystem2D.OnObjectPlaced?.Invoke(placedObject, gridPositionList);
+            
+            List<Vector2Int> gridPositionList = PlacedObjectTypeSO.GetGridPositionList(placedObjectOrigin, dir);
+            
+            GridBuildingSystem2D.OnObjectMoved?.Invoke(lastPosition, gridPositionList);
+            this.SetOrigin(placedObjectOrigin);
             DrawWalkPath(pathVectorList);
             pathVectorList.RemoveAt(0);
             
