@@ -44,7 +44,7 @@ public class CharacterPathfindingMovementHandler : PlacedObject_Done {
         HandleMovement();
         unitSkeleton.Update(Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.Space) && isSelected && !UtilsClass.IsPointerOverUI()) {
+        if (Input.GetMouseButtonDown(0) && isSelected && !UtilsClass.IsPointerOverUI()) {
             Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
             SetTargetPosition(mouseWorldPosition);
         }
