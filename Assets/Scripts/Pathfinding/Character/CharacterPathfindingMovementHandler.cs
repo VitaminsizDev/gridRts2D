@@ -1,28 +1,12 @@
-﻿/* 
-    ------------------- Code Monkey -------------------
-
-    Thank you for downloading this package
-    I hope you find it useful in your projects
-    If you have any questions let me know
-    Cheers!
-
-               unitycodemonkey.com
-    --------------------------------------------------
- */
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using V_AnimationSystem;
 using Helper.Utils;
 
 public class CharacterPathfindingMovementHandler : PlacedObject_Done {
 
     private const float speed = 40f;
 
-    private V_UnitSkeleton unitSkeleton;
-    private V_UnitAnimation unitAnimation;
-    private AnimatedWalker animatedWalker;
     private int currentPathIndex;
     private List<Vector3> pathVectorList;
     private LineRenderer lineRenderer;
@@ -33,16 +17,12 @@ public class CharacterPathfindingMovementHandler : PlacedObject_Done {
     private void Start() {
         pathVectorList = null;
         Transform bodyTransform = transform.Find("Body");
-        unitSkeleton = new V_UnitSkeleton(1f, bodyTransform.TransformPoint, (Mesh mesh) => bodyTransform.GetComponent<MeshFilter>().mesh = mesh);
-        unitAnimation = new V_UnitAnimation(unitSkeleton);
-        animatedWalker = new AnimatedWalker(unitAnimation, UnitAnimType.GetUnitAnimType("dMarine_Idle"), UnitAnimType.GetUnitAnimType("dMarine_Walk"), 1f, 1f);
         lineRenderer = GetComponentInChildren<LineRenderer>();
         lastPosition = transform.position;
     }
 
     private void Update() {
         HandleMovement();
-        unitSkeleton.Update(Time.deltaTime);
 
         if (Input.GetMouseButtonDown(0) && isSelected && !UtilsClass.IsPointerOverUI()) {
             Vector3 mouseWorldPosition = UtilsClass.GetMouseWorldPosition();
@@ -50,28 +30,31 @@ public class CharacterPathfindingMovementHandler : PlacedObject_Done {
         }
     }
     
+    /// <summary>
+    /// Moves to the target node by node with given speed
+    /// </summary>
     private void HandleMovement() {
         if (pathVectorList == null)
         {
-            animatedWalker.SetMoveVector(Vector3.zero);
             return;
         }
 
         Vector3 targetPosition = pathVectorList[currentPathIndex];
         if (Vector3.Distance(transform.position, targetPosition) > 1f) {
             Vector3 moveDir = (targetPosition - transform.position).normalized;
-            animatedWalker.SetMoveVector(moveDir);
             transform.position += moveDir * speed * Time.deltaTime;
         } else {
             currentPathIndex++;
             if (currentPathIndex >= pathVectorList.Count) {
                 StopMoving();
-                animatedWalker.SetMoveVector(Vector3.zero);
                 lineRenderer.positionCount = 0;
             }
         }
     }
-
+    
+    /// <summary>
+    /// Reset the move list when reached target
+    /// </summary>
     private void StopMoving() {
         pathVectorList = null;
     }
@@ -80,6 +63,10 @@ public class CharacterPathfindingMovementHandler : PlacedObject_Done {
         return transform.position;
     }
 
+    /// <summary>
+    /// Finds the path to follow
+    /// </summary>
+    /// <param name="targetPosition"></param>
     public void SetTargetPosition(Vector3 targetPosition) {
         currentPathIndex = 0;
         // Find path, if path found then set the pathVectorList
@@ -107,11 +94,20 @@ public class CharacterPathfindingMovementHandler : PlacedObject_Done {
         }
     }
 
+    /// <summary>
+    /// Draws the path to follow with line renderer
+    /// </summary>
+    /// <param name="path"></param>
     private void DrawWalkPath(List<Vector3> path)
     {
         lineRenderer.positionCount = path.Count;
+        GridManager.Instance.Grid.GetXY(this.transform.position, out int currentX, out int currentY);
         if (path != null) {
-            for (int i=0; i<=path.Count - 1; i++) {
+            var firstPos = GridManager.Instance.Grid.GetWorldPosition(currentX, currentY) + Vector3.one * GridManager.Instance.Grid.GetCellSize() * .5f;
+            firstPos.z = 0;
+            lineRenderer.SetPosition(0, firstPos);
+            for (int i=1; i<=path.Count - 1; i++)
+            {
                 var lineRenderTarget = path[i];
                 lineRenderTarget.z = 0;
                 lineRenderer.SetPosition(i, lineRenderTarget);

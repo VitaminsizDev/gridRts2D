@@ -36,6 +36,7 @@ public class PlacedObjectTypeSO : ScriptableObject {
     public int height;
     public ObjectType objType;
     public GameObject productionUnitHolder;
+    public Sprite sprite;
 
     public int GetRotationAngle(Dir dir) {
         switch (dir) {

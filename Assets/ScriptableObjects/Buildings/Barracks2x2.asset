@@ -19,3 +19,4 @@ MonoBehaviour:
   height: 2
   objType: 0
   productionUnitHolder: {fileID: 5765973781918360821, guid: 70590066bd6bd334d94f31de33183bf6, type: 3}
+  sprite: {fileID: 21300000, guid: e1020d6a7a4be70448968ce7aafba3f3, type: 3}

@@ -71,7 +71,9 @@ public class GridBuildingSystem2D : MonoBehaviour {
                 Vector3 placedObjectWorldPosition = grid.GetWorldPosition(x, z) + new Vector3(rotationOffset.x, rotationOffset.y) * grid.GetCellSize();
 
                 PlacedObject_Done placedObject = PlacedObject_Done.Create(placedObjectWorldPosition, placedObjectOrigin, dir, placedObjectTypeSO);
-                
+                if(placedObjectTypeSO.objType == PlacedObjectTypeSO.ObjectType.MovingUnit)  {
+                    placedObject.transform.position += Vector3.one * grid.GetCellSize() * 0.5f;
+                }
                 // Invoke OnObjectPlaced Event
                 OnObjectPlaced?.Invoke(placedObject, gridPositionList);
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
@@ -77,6 +78,7 @@ public class UiManager : MonoBehaviour
             _openUnitInfoPanelTween.PlayForward();
             // Set name
             unitInfoPanel.Find("UnitName").GetComponent<TextMeshProUGUI>().text = selectedObject.PlacedObjectTypeSO.nameString;
+            unitInfoPanel.Find("UnitSprite").GetComponent<Image>().sprite = selectedObject.PlacedObjectTypeSO.sprite;
             if (selectedObject.PlacedObjectTypeSO.objType == PlacedObjectTypeSO.ObjectType.UnitSpawner)
             {
                 unitInfoPanel.Find("ProductionTitle").gameObject.SetActive(true);
