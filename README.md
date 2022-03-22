@@ -3,7 +3,7 @@
 
 
 <h1>Gameplay Video</h1>
-https://i.imgur.com/vKb2F1B.png)](https://user-images.githubusercontent.com/58806238/159463699-7acdb28c-805a-4d54-b2c2-08517c9a5123.mp4
+https://user-images.githubusercontent.com/58806238/159464947-8f80acec-554c-45a0-b94e-c30672ac3f4c.mp4
 
 <h1>Brief Information</h1>
 -This is a 2D grid based rts game demo<br>
