@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameString: Soldier 1x1
   prefab: {fileID: 8977567878950729407, guid: d11b7d640a872bf4e8db9e135b4ac89a, type: 3}
-  visual: {fileID: 6271766961574565335, guid: bc036bdfa27fe0a4a91314610068f5ac, type: 3}
+  visual: {fileID: 2499414142690952232, guid: 60152d6b0f2b723469a265c03627b258, type: 3}
   width: 1
   height: 1
   objType: 1

@@ -24,8 +24,9 @@ public class PlacedObjectTypeSO : ScriptableObject {
 
     public enum ObjectType
     {
-        Building,
-        Unit
+        UnitSpawner,
+        GoldSpawner,
+        MovingUnit
     }
 
     public string nameString;
@@ -34,6 +35,7 @@ public class PlacedObjectTypeSO : ScriptableObject {
     public int width;
     public int height;
     public ObjectType objType;
+    public GameObject productionUnitHolder;
 
     public int GetRotationAngle(Dir dir) {
         switch (dir) {

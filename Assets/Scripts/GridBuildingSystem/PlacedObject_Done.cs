@@ -47,11 +47,13 @@ public class PlacedObject_Done : MonoBehaviour {
     public PlacedObjectTypeSO PlacedObjectTypeSO { get { return placedObjectTypeSO; } }
     private Vector2Int origin;
     public PlacedObjectTypeSO.Dir dir;
+    [SerializeField] private GameObject productionUnitHolder;
 
     private void Setup(PlacedObjectTypeSO placedObjectTypeSO, Vector2Int origin, PlacedObjectTypeSO.Dir dir) {
         this.placedObjectTypeSO = placedObjectTypeSO;
         this.origin = origin;
         this.dir = dir;
+        this.productionUnitHolder = placedObjectTypeSO.productionUnitHolder;
     }
     
     public void SetOrigin(Vector2Int origin) {

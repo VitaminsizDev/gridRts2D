@@ -77,15 +77,22 @@ public class UiManager : MonoBehaviour
             _openUnitInfoPanelTween.PlayForward();
             // Set name
             unitInfoPanel.Find("UnitName").GetComponent<TextMeshProUGUI>().text = selectedObject.PlacedObjectTypeSO.nameString;
-            if (selectedObject.PlacedObjectTypeSO.objType == PlacedObjectTypeSO.ObjectType.Building)
+            if (selectedObject.PlacedObjectTypeSO.objType == PlacedObjectTypeSO.ObjectType.UnitSpawner)
             {
                 unitInfoPanel.Find("ProductionTitle").gameObject.SetActive(true);
-                unitInfoPanel.Find("UnitButton").gameObject.SetActive(true);
+                unitInfoPanel.Find("UnitButtonParent").gameObject.SetActive(true);
+                // Destroy childrens of unitInfoPanel.Find("UnitButtonParent")
+                foreach (Transform child in unitInfoPanel.Find("UnitButtonParent"))
+                {
+                    Destroy(child.gameObject);
+                }
+                // Instantiate new button
+                Instantiate(selectedObject.PlacedObjectTypeSO.productionUnitHolder, unitInfoPanel.Find("UnitButtonParent"));
             }
             else
             {
                 unitInfoPanel.Find("ProductionTitle").gameObject.SetActive(false);
-                unitInfoPanel.Find("UnitButton").gameObject.SetActive(false);
+                unitInfoPanel.Find("UnitButtonParent").gameObject.SetActive(false);
             }
         }
         else _openUnitInfoPanelTween.PlayBackwards();
