@@ -2,8 +2,9 @@
 <h3>Made by Soykan Göksel Kamal in 2.5 days</h3>
 
 
-<h1>Gameplay Gif</h1>
-<img src="https://github.com/VitaminsizDev/gridRts2D/blob/main/Gifs/introGif.gif" alt="c#" width="1280" height="720"/> <br/>
+<h1>Gameplay Video</h1>
+https://user-images.githubusercontent.com/58806238/159463699-7acdb28c-805a-4d54-b2c2-08517c9a5123.mp4
+
 
 <h1>Brief Information</h1>
 -This is a 2D grid based rts game demo<br>
@@ -23,3 +24,6 @@
 
 -Factory: <br>
 * Used in grid creation. Grid system is generic, grid nodes are generic and they create their own instances.
+
+<h1>Gameplay Gif</h1>
+<img src="https://github.com/VitaminsizDev/gridRts2D/blob/main/Gifs/introGif.gif" alt="c#" width="1280" height="720"/> <br/>
