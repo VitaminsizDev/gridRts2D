@@ -9,7 +9,7 @@ public class CursorManager : MonoBehaviour
     void Start()
     {
         // Set cursor texture to _cursor.texture
-        Cursor.SetCursor(_cursor, Vector2.zero, CursorMode.Auto);
+        Cursor.SetCursor(_cursor, Vector2.zero, CursorMode.ForceSoftware);
     }
     
 
